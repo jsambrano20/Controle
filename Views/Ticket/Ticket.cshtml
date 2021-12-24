@@ -1,0 +1,33 @@
+﻿<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<form action="/ticket/salvar" method="post">
+    <div>
+        <label for="Titulo">Titulo:</label>
+        <input type="text" id="Titulo" name="Titulo" />
+    </div>
+    <div>
+        <label for="Ticket">Ticket:</label>
+        <input type="text" id="Ticket" name="Ticket" />
+    </div>
+    <div>
+        <label for="Data">Data:</label>
+        <input type="datetime" id="Data" name="Data" />
+    </div>
+    <div>
+        <label for="Cliente">Cliente:</label>
+        <input type="text" id="Cliente" name="Cliente" />
+    </div>
+    <div>
+        <label for="Status">Status:</label>
+        <input type="text" id="Status" name="Status" />
+    </div>
+    <div>
+        <label for="Comentario">Comentario:</label>
+        <input type="text" id="Comentario" name="Comentario" />
+    </div>
+    <br />
+    <div class="button">
+        <button type="submit">Salvar</button>
+    </div>
+</form>

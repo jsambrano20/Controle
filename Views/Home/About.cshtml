@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Controle.Models.Ticket>
+
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<p><a class="btn btn-default" href="/Ticket">Adicionar &raquo;</a></p>
+<br />
+
+<table>
+    <tr>
+        <th>Titulo</th>
+        <th>Ticket</th>
+        <th>Cliente</th>
+        <th>Status</th>
+        <th>Comentário</th>
+    </tr>
+    @*@foreach (var ticket in ViewBag.Lista)
+    {
+        <tr>
+
+            <td>@ticket.Titulo</td>
+            <td>@ticket.Ticket</td>
+            <td>@ticket.Cliente</td>
+            <td>@ticket.Status</td>
+            <td>@ticket.Comentario</td>
+
+        </tr>
+    }*@
+</table>
