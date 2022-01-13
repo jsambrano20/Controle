@@ -1,26 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
+using System.Web.Configuration;
 
 namespace Controle.Models
 {
     public class Ticket
     {
+        private readonly static string _cn = WebConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+
         public int Id { get; set; }
+
+        [Display(Name = "Titulo: ")]
+        [Required(ErrorMessage = "É necessário preencher o Titulo")]
         public string Titulo { get; set; }
+
+        [Display(Name = "Ticket: ")]
+        [Required(ErrorMessage = "É necessário preencher o Ticket")]
         public string Tick { get; set; }
-        public string Data { get; set; }
-        public string Cliente { get; set; }
-        public string Status { get; set; }
+
+        [Display(Name = "Data: ")]
+        [Required(ErrorMessage = "É necessário inserir a Data")]
+        public DateTime Data { get; set; }
+
+        [Display(Name = "Cliente: ")]
+        [Required(ErrorMessage = "É necessário inserir um Cliente")]
+        public Cliente Cliente { get; set; }
+
+        [Display(Name = "Status: ")]
+        [Required(ErrorMessage = "É necessário inserir um Status")]
+        public Status Status { get; set; }
+
+        [Display(Name = "Comentario: ")]
+        [Required(ErrorMessage = "É necessário preencher o Comentario")]
         public string Comentario { get; set; }
 
-        public Ticket() { }
 
-        public Ticket(int id, string titulo, string tick, string data, string cliente,
-            string status, string comentario)
+        public Ticket()
+        {
+        }
+
+        public Ticket(int id, string titulo, string tick, DateTime data, Cliente cliente,
+            Status status, string comentario)
         {
             Id = id;
             Titulo = titulo;
@@ -30,91 +54,165 @@ namespace Controle.Models
             Status = status;
             Comentario = comentario;
         }
-        public bool gravarTicket()
+
+
+        public static List<Ticket> GetTicket()
         {
-            Banco banco = new Banco();
-
-            SqlConnection cn = banco.abrirConexao();
-            SqlTransaction tran = cn.BeginTransaction();
-            SqlCommand command = new SqlCommand();
-
-            command.Connection = cn;
-            command.Transaction = tran;
-            command.CommandType = CommandType.Text;
-            command.CommandText = "Insert into tb_planilha values (@TITULO, @TICKET, @DATA, @CLIENTE, @STATUS, @COMENTARIO);";
-            command.Parameters.Add("@TITULO", SqlDbType.VarChar);
-            command.Parameters.Add("@TICKET", SqlDbType.VarChar);
-            command.Parameters.Add("@DATA", SqlDbType.DateTime);
-            command.Parameters.Add("@CLIENTE", SqlDbType.VarChar);
-            command.Parameters.Add("@STATUS", SqlDbType.VarChar);
-            command.Parameters.Add("@COMENTARIO", SqlDbType.VarChar);
-            command.Parameters[0].Value = Titulo;
-            command.Parameters[1].Value = Tick;
-            command.Parameters[2].Value = Data;
-            command.Parameters[3].Value = Cliente;
-            command.Parameters[4].Value = Status;
-            command.Parameters[5].Value = Comentario;
-
-
-
+            var listaTickets = new List<Ticket>();
+            var sql = "SELECT * FROM tb_planilha";
 
             try
             {
-                command.ExecuteNonQuery();
-                tran.Commit();
-                return true;
+
+                using (SqlConnection cn = new SqlConnection(_cn))
+                {
+                    cn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, cn))
+                    {
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            if (dr.HasRows)
+                            {
+                                while (dr.Read())
+                                {
+                                    listaTickets.Add(new Ticket(
+                                        Convert.ToInt32(dr["Id"]),
+                                        dr["Titulo"].ToString(),
+                                        dr["Ticket"].ToString(),
+                                        Convert.ToDateTime(dr["Data"]),
+                                        (Cliente)Convert.ToByte(dr["Cliente"]),
+                                        (Status)Convert.ToByte(dr["Status"]),
+                                        dr["Comentario"].ToString()));
+                                }
+
+
+                            }
+
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                tran.Rollback();
-                return false;
+                Console.WriteLine("Falha: " + ex.Message); ;
             }
-            finally
-            {
+            return listaTickets;
 
-                banco.fecharConexao();
-            }
-            return true;
         }
 
-        public Ticket consultaTicket(int id)
+        public void Salvar()
         {
-            Banco bd = new Banco();
+
+            var sql = "";
+            if (Id == 0)
+                sql = "insert into tb_planilha values (@TITULO, @TICKET, @DATA, @CLIENTE, @STATUS, @COMENTARIO)";
+            else
+                sql = "update tb_planilha set titulo=@TITULO, ticket=@TICKET, data=@DATA, cliente=@CLIENTE, status=@STATUS, comentario=@COMENTARIO where id=" + Id;
             try
             {
-                SqlConnection cn = bd.abrirConexao();
-                SqlCommand command = new SqlCommand("select * from tb_planilha", cn);
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection cn = new SqlConnection(_cn))
                 {
-                    if (reader.GetInt32(0) == id)
+                    cn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, cn))
                     {
+                        cmd.Parameters.AddWithValue("@Titulo", Titulo);
+                        cmd.Parameters.AddWithValue("@Ticket", Tick);
+                        cmd.Parameters.AddWithValue("@Data", Data);
+                        cmd.Parameters.AddWithValue("@Cliente", Cliente);
+                        cmd.Parameters.AddWithValue("@Status", Status);
+                        cmd.Parameters.AddWithValue("@Comentario", Comentario);
 
-                        this.Id = reader.GetInt32(0);
-                        Titulo = reader.GetString(1);
-                        Tick = reader.GetString(2);
-                        Data = reader.GetString(3);
-                        Cliente = reader.GetString(4);
-                        Status = reader.GetString(5);
-                        Comentario = reader.GetString(6);
-
-                        return this;
+                        cmd.ExecuteNonQuery();
 
                     }
-
-
                 }
-                return null;
+
             }
             catch (Exception ex)
             {
-                return null;
+
+                Console.WriteLine("Falha: " + ex); ;
             }
-            finally
+
+        }
+        public void GetTickets(int id)
+        {
+            var sql = "select * from tb_planilha where id =" + id;
+
+            try
             {
-                bd.fecharConexao();
+                using (SqlConnection cn = new SqlConnection(_cn))
+                {
+                    cn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, cn))
+                    {
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            if (dr.HasRows)
+                            {
+                                if (dr.Read())
+                                {
+                                    Id = id;
+                                    Titulo = dr["Titulo"].ToString();
+                                    Tick = dr["Ticket"].ToString();
+                                    Data = Convert.ToDateTime(dr["Data"]);
+                                    Cliente = (Cliente)Convert.ToByte(dr["Cliente"]);
+                                    Status = (Status)Convert.ToByte(dr["Status"]);
+                                    Comentario = dr["Comentario"].ToString();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Titulo = "Falha: " + ex.Message;
+                Console.WriteLine("Falha: " + ex.Message);
+            }
+
+        }
+
+        public void Excluir()
+        {
+            var sql = "delete from tb_planilha where id = " + Id;
+
+            try
+            {
+                using (SqlConnection cn = new SqlConnection(_cn))
+                {
+                    cn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, cn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Falha: " + ex.Message);
             }
         }
+
+
+
+
     }
+
+
+    public enum Status : int
+    {
+        Resolvido = 1,
+        Encaminhado = 2,
+        Pendente = 3,
+    }
+    public enum Cliente : int
+    {
+        UFN = 1,
+        ATOS = 2,
+        MICROSOFT = 3,
+    }
+
 }

@@ -1,0 +1,59 @@
+﻿@*@model IEnumerable<Controle.Models.Ticket>
+    @using Controle.Models*@
+@model PagedList.IPagedList<Controle.Models.Ticket>
+@using PagedList.Mvc;
+
+<div class="right_articles" id="Layer1" style="position:relative; max-height:400x; overflow-y: auto;">
+    <h2 class="text-center">REGISTROS</h2>
+    <div class="text-center">
+    </div>
+    <br />
+    <div class="text-center">
+        @using (Html.BeginForm("Exportar", "Home", FormMethod.Post))
+        {
+            <p><a style="background-color:black" class="btn btn-primary" href="/Ticket/Adicionar">Adicionar &raquo;</a> <input class="btn btn-primary" style="background-color:black" type="submit" id="btnSubmit" value="Exportar &raquo;" /></p>
+        }
+    </div>
+    <br />
+
+    @using (Html.BeginForm("Tickets", "Home", FormMethod.Get))
+    {
+        <p>
+            Pesquisa: @Html.TextBox("search", ViewBag.CurrentFilter as string, new { @class = "form-control-plaintext" }) <input class="btn btn-primary" style="background-color:black" type="submit" id="btnSubmit" value="Search"
+        </p>
+    }
+
+    <table class="table table-dark table-striped">
+        <tr>
+            <th>Titulo</th>
+            <th>Ticket</th>
+            <th>Data</th>
+            <th>Cliente</th>
+            <th>Status</th>
+            <th>Comentário</th>
+            <th>Alterar</th>
+            <th>Excluir</th>
+        </tr>
+
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td class="text-left">@ticket.Titulo</td>
+                <td class="text-left">@ticket.Tick</td>
+                <td class="text-left">@ticket.Data.ToString("dd/MM/yyyy")</td>
+                <td class="text-left">@ticket.Cliente</td>
+                <td class="text-left">@ticket.Status</td>
+                <td class="text-left">@ticket.Comentario</td>
+                <td class="text-left"><a class="btn btn-primary" href="/Ticket/Alterar/@ticket.Id">Alterar</a></td>
+                <td class="text-left"><a class="btn btn-danger" href="/Ticket/Excluir/@ticket.Id">Excluir</a></td>
+            </tr>
+        }
+        <br />
+    </table>
+    PAGINA @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) DE @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Tickets",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+    <br />
+</div>
+

@@ -3,40 +3,51 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title ">@ViewBag.Title </title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-dark navbar-inverse navbar-fixed-top" style="background-color:black">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <div class="navbar-header col-sm-push-10">
+                <button style="background-color:black" type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Controle", "Index", "Home", new { area = "" }, new { @class = "navbar-brand col-sm-1 " })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Ticket", "About", "Home")</li>
                     <li>@Html.ActionLink("Contato", "Contact", "Home")</li>
+                    @{
+                        HttpCookie cookie = Request.Cookies["ATickets"];
+                        if (cookie != null)
+                        {
+                            <li>@Html.ActionLink("Registro", "Tickets", "Home")</li>
+                            <li>@Html.ActionLink("Grafico", "GraficoColuna", "Grafico")</li>
+                            <li class="item">@Html.ActionLink("Sair", "Index", "Sair")</li>
+                        }
+                    }
                 </ul>
             </div>
         </div>
-    </div>
+    </nav>
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        <footer class="footer navbar-flex-bottom">
+            <p class="position-fixed">&copy; @DateTime.Now.Year - ALUNO - Joao Victor Sambrano</p>
         </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/Highcharts-4.0.1/js/highcharts.js")
+    <script src="~/Scripts/Highcharts-4.0.1/js/highcharts.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

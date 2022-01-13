@@ -1,0 +1,64 @@
+﻿@model Controle.Models.Ticket
+@using Controle.Models
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<div class="text-center">
+    <h3 class="badge bg-secondary">@ViewBag.Message</h3>
+</div>
+
+@using (Html.BeginForm("Salvar", "Ticket", FormMethod.Post, new { id = "formTicketAdicionar", name = "formTicketAdicionar" }))
+{
+
+    <div class="row col-md-offset-3">
+        @Html.LabelFor(Model => Model.Titulo, new { @class = "col-sm-2 col-form-label text-right" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(Model => Model.Titulo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(Model => Model.Titulo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        @Html.LabelFor(Model => Model.Tick, new { @class = "col-sm-2 col-form-label text-right" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(Model => Model.Tick, new { @class = "form-control" })
+            @Html.ValidationMessageFor(Model => Model.Tick, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        @Html.LabelFor(Model => Model.Data, new { @class = "col-sm-2 col-form-label text-right" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(Model => Model.Data, new { @class = "form-control", type = "date" })
+            @Html.ValidationMessageFor(Model => Model.Data, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        @Html.LabelFor(Model => Model.Cliente, new { @class = "col-sm-2 col-form-label text-right" })
+        <div class="col-sm-4">
+            @Html.DropDownListFor(Model => Model.Cliente, Cliente.MICROSOFT.ToSelectList(),
+           "Selecione o Cliente", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        @Html.LabelFor(Model => Model.Status, new { @class = "col-sm-2 col-form-label text-right" })
+        <div class="col-sm-4">
+            @Html.DropDownListFor(Model => Model.Status, Status.Resolvido.ToSelectList(),
+           "Selecione o Status", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        @Html.LabelFor(Model => Model.Comentario, new { @class = "col-sm-2 col-form-label text-right" })
+        <div class="col-sm-4">
+            @Html.TextAreaFor(Model => Model.Comentario, new { @class = "form-control" })
+            @Html.ValidationMessageFor(Model => Model.Comentario, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <br />
+    <h3 class="badge bg-danger">@ViewBag.Erro</h3>
+    <br />
+    <div class="button text-center">
+        <button class="btn btn-success" type="submit">Salvar</button>
+    </div>
+
+    <div class="button text-center">
+        <a class="btn btn-secondary btn-block" href="/Home/Tickets" role="button">Voltar</a>
+    </div>
+}

@@ -1,0 +1,55 @@
+﻿@model Controle.Models.Ticket
+@{
+    var ticket = ViewBag.Ticket;
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+<div class="text-center">
+    <h3 class="badge bg-secondary">Excluir Ticket</h3>
+</div>
+
+<form action="/ticket/excluir" method="post">
+    <div class="row col-md-offset-3">
+        <input type="hidden" id="id" name="id" value="@ticket.Id" />
+        <label for="Titulo" class="col-sm-2 col-form-label text-right">Titulo:</label>
+        <div class="col-sm-4">
+            <input class="form-control" rows="3" type="text" id="Titulo" name="Titulo" value="@ticket.Titulo" readonly />
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        <label for="Ticket" class="col-sm-2 col-form-label text-right">Ticket:</label>
+        <div class="col-sm-4">
+            <input class="form-control" rows="3" type="text" id="Ticket" name="Ticket" value="@ticket.Tick" readonly />
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        <label for="Data" class="col-sm-2 col-form-label text-right">Data:</label>
+        <div class="col-sm-4">
+            <input class="form-control" rows="3" type="text" id="Data" name="Data" value="@ticket.Data.ToString("dd/MM/yyyy")" readonly />
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        <label for="Cliente" class="col-sm-2 col-form-label text-right">Cliente:</label>
+        <div class="col-sm-4">
+            <input class="form-control" rows="3" type="text" id="Cliente" name="Cliente" value="@ticket.Cliente" readonly />
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        <label for="Status" class="col-sm-2 col-form-label text-right">Status:</label>
+        <div class="col-sm-4">
+            <input class="form-control" rows="3" type="text" id="Status" name="Status" value="@ticket.Status" readonly />
+        </div>
+    </div>
+    <div class="row col-md-offset-3">
+        <label for="Comentario" class="col-sm-2 col-form-label text-right">Comentario:</label>
+        <div class="col-sm-4">
+            <textarea class="form-control" rows="3" type="text" id="Comentario" name="Comentario" value="@ticket.Comentario" readonly></textarea>
+        </div>
+    </div>
+    <br />
+    <div class="button text-center">
+        <button class="btn btn-danger" type="submit">Excluir</button>
+    </div>
+    <div class="button text-center">
+        <a class="btn btn-secondary btn-block" href="/Home/Tickets" role="button">Voltar</a>
+    </div>
+</form>
